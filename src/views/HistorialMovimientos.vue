@@ -130,142 +130,136 @@ return new Date (fecha).toLocaleString()
 }
 </script>
 
-<style scoped>
+<<style scoped>
 .contenedor-principal {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 40px auto;
-  padding: 0 20px;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #333;
+  padding: 0 24px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 h1 {
-  text-align: left;
-  font-size: 28px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 24px;
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 28px;
 }
 
-/* Contenedor de la tabla para darle bordes redondeados suaves y sombra ligera */
 .historial-movimientos {
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eef2f5;
+  border-radius: 20px;
+  /* Sombra violeta/azulada muy llamativa de fondo */
+  box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.15), 0 0 0 1px rgba(99, 102, 241, 0.05);
+  border: 2px solid #e2e8f0;
   overflow: hidden;
-  padding: 20px;
+  padding: 24px;
 }
 
 .tabla {
   width: 100%;
-  border-collapse: collapse;
-  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 th {
-  background-color: #f8fafc;
-  color: #64748b;
-  font-size: 13px;
-  font-weight: 600;
+  /* Cabecera oscura para generar alto impacto visual */
+  background-color: #0f172a;
+  color: #38bdf8; /* Azul cyan llamativo */
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 16px;
-  border-bottom: 2px solid #edf2f7;
+  letter-spacing: 1px;
+  padding: 20px;
 }
 
+/* Redondear las esquinas superiores de la cabecera oscura */
+th:first-child { border-top-left-radius: 12px; }
+th:last-child { border-top-right-radius: 12px; }
+
 td {
-  padding: 16px;
+  padding: 18px 20px;
   color: #334155;
   font-size: 15px;
   border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
 }
 
-/* Efecto sutil al pasar el mouse por la fila */
 tr:hover td {
-  background-color: #f8fafc;
+  /* Resaltado de fila con un tono celeste/azul muy suave */
+  background-color: #f0fdf4; 
 }
 
-/* Estilo para las acciones (Compra / Venta) tipo Badge */
 td:nth-child(2) {
-  font-weight: 600;
-  color: #059669; /* Verde moderno para compras */
+  font-weight: 700;
 }
 
-/* Botones de acción estilizados en línea */
+/* Botones de control internos (Ver, Editar, Eliminar) */
 td button {
-  padding: 6px 12px;
-  margin-right: 6px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  background-color: #ffffff;
+  padding: 8px 14px;
+  margin-right: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f8fafc;
   color: #475569;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 td button:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-  color: #1e293b;
+  background-color: #6366f1;
+  color: #ffffff;
+  border-color: #6366f1;
+  transform: translateY(-1px);
 }
 
-/* Estilo destructivo específico para el botón Eliminar */
 td button:last-child:hover {
-  background-color: #fee2e2;
-  border-color: #fca5a5;
-  color: #dc2626;
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: #ffffff;
 }
 
-/* Estilos para las tarjetas flotantes de Detalle y Edición */
+/* Caja de detalles y edición */
 .mostrarInfo {
-  margin-top: 30px;
-  padding: 24px;
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  margin-top: 36px;
+  padding: 32px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 20px;
+  color: #ffffff;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
 }
 
 .mostrarInfo h2 {
-  font-size: 20px;
+  font-size: 24px;
+  color: #38bdf8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
   margin-top: 0;
-  margin-bottom: 16px;
-  color: #1e293b;
-}
-
-.mostrarInfo p {
-  margin: 10px 0;
-  font-size: 14px;
-}
-
-.mostrarInfo label {
-  display: block;
-  font-weight: 600;
-  margin-top: 12px;
-  margin-bottom: 4px;
-  font-size: 13px;
-  color: #475569;
 }
 
 .mostrarInfo input, .mostrarInfo select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 14px;
-  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
 }
 
 .mostrarInfo button {
-  margin-top: 16px;
-  margin-right: 8px;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 600;
+  margin-top: 24px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
   cursor: pointer;
+  border: none;
+  background: #6366f1;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.mostrarInfo button:hover {
+  background: #4f46e5;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
 }
 </style>

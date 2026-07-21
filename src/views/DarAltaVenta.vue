@@ -2,9 +2,11 @@
   <div class="contenedor-principal">
     <dashbord />
     <div class="formulario">
-      <h1>Nueva Compra</h1>
-      <form class="formulario-compra" @submit.prevent="procesarFormulario">
-        <label for="criptomoneda">Criptomoneda:</label>
+      <h1>Nueva Venta</h1>
+      <form class="formulario-venta" @submit.prevent="procesarFormulario">
+        
+    
+        <label for="criptomoneda">Criptomoneda Vendida:</label>
         <select id="criptomoneda" v-model="monedaSeleccionada" required>
           <option value="" disabled>Selecciona una criptomoneda</option>
           <option value="btc">Bitcoin</option>
@@ -12,11 +14,8 @@
           <option value="usdt">USDT</option>
           <option value="sol">Solana</option>
         </select>
-
         <label for="cantidad">Cantidad:</label>
         <input type="number" id="cantidad" v-model="montoCantidad" step="any" min="0" required />
-
-        <!-- Campo Cliente -->
         <label for="cliente">Cliente Asignado:</label>
         <select id="cliente" v-model="clienteSeleccionado" required>
           <option value="" disabled>Selecciona un cliente</option>
@@ -24,13 +23,11 @@
             {{ cliente.name }}
           </option>
         </select>
-
-
         <label for="fechayhora">Fecha y Hora:</label>
         <input type="datetime-local" id="fechayhora" v-model="fechaTransaccion" required />
 
-        <div class="registrar-compra">
-          <button type="submit">Registrar Compra</button>
+        <div class="registrar-venta">
+          <button type="submit">Registrar Venta</button>
         </div>
       </form>
     </div>
@@ -41,68 +38,59 @@
 import { ref } from 'vue'
 import dashbord from '@/components/dashbord.vue'
 
-
+// Estados reactivos
 const monedaSeleccionada = ref('')
 const montoCantidad = ref(0)
 const fechaTransaccion = ref('')
 const clienteSeleccionado = ref('') 
 const clientes = ref([])
 
-const registrarCompraEnServidor = async (datos) => {
-  const endpoint = 'https://localhost:7271/Transaction'
-  
-  const respuesta = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(datos),
-  })
-
-  if (!respuesta.ok) {
-    throw new Error('Error en el servidor')
-  }
-
-  return await respuesta.json()
-}
-
 const procesarFormulario = async () => {
-  
-  if (!monedaSeleccionada.value || !fechaTransaccion.value) {
-    alert('Por favor, complete todos los campos obligatorios.')
-    return
-  }
+  if (!monedaSeleccionada.value || !clienteSeleccionado.value||montoCantidad.value <= 0){
 
-  if (montoCantidad.value <= 0) {
-    alert('La cantidad ingresada debe ser mayor a cero.')
+alert('Por favor, complete todos los campos obligatorios.')
     return
-  }
-
+}
   const momentoElegido = new Date(fechaTransaccion.value)
   const momentoActual = new Date()
   if (momentoElegido > momentoActual) {
     alert('No es posible registrar una transacción con fecha futura.')
     return
   }
-
   try {
     const nuevaTransaccion = {
-      CryptoCode: monedaSeleccionada.value,
-      Action: 'purchase',
-      CryptoAmount: montoCantidad.value,
-      DateTime: fechaTransaccion.value,
+    CryptoCode: monedaSeleccionada.value,
+    Action: 'sale', 
+    CryptoAmount: montoCantidad.value,
+    ClientId: clienteSeleccionado.value, 
+    DateTime: fechaTransaccion.value,
+  }
+    const endpoint = 'https://localhost:7271/Transaction'
+    
+    const respuesta = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nuevaTransaccion),
+    })
+
+    if (respuesta.ok) {
+      const resultado = await respuesta.json()
+      alert(`¡Venta registrada con éxito! El sistema calculó el total: $${resultado.moneyAmount || resultado.money}`)
+    
+      monedaSeleccionada.value = ''
+      montoCantidad.value = 0
+      fechaTransaccion.value = ''
+      clienteSeleccionado.value = ''
+    } else {
+      const errorData = await respuesta.text()
+      alert(`Error del servidor: ${errorData}`)
     }
-
-    const resultado = await registrarCompraEnServidor(nuevaTransaccion)
-    
-    alert(`Compra registrada con exito en la base de datos. Total gastado: $${resultado.money}`)
-    
-    monedaSeleccionada.value = ''
-    montoCantidad.value = 0
-    fechaTransaccion.value = ''
-
+ 
   } catch (error) {
-    alert('Error al guardar en el servidor. Revisa la consola.')
+
     console.error('Detalle del error:', error)
   }
+  
 }
 const cargarClientes = async () => {
     try{
@@ -115,6 +103,7 @@ const cargarClientes = async () => {
     }
   }
   cargarClientes();
+
 </script>
 
 <style scoped>
@@ -128,7 +117,6 @@ const cargarClientes = async () => {
 .formulario, .alta-cliente-container {
   max-width: 480px;
   margin: 40px auto;
-  /* Fondo llamativo en degradé oscuro/violáceo */
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 50px rgba(99, 102, 241, 0.15);
@@ -141,7 +129,6 @@ h1, h2 {
   text-align: center;
   font-size: 28px;
   font-weight: 800;
-  /* Texto brillante con degradado */
   background: linear-gradient(to right, #38bdf8, #818cf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -161,7 +148,7 @@ label {
   font-weight: 600;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #94a3b8; /* Gris claro para que resalte en el fondo oscuro */
+  color: #94a3b8; 
 }
 
 input, select {
@@ -171,12 +158,11 @@ input, select {
   border-radius: 12px;
   font-size: 15px;
   color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.05); /* Input semi-transparente */
+  background-color: rgba(255, 255, 255, 0.05); 
   box-sizing: border-box;
   transition: all 0.25s ease;
 }
 
-/* Estilo para las opciones del select (para que no queden blancas u ocultas) */
 select option {
   background-color: #0f172a;
   color: #ffffff;
@@ -207,7 +193,6 @@ button[type="submit"] {
   transition: all 0.2s ease;
 }
 
-/* Botón VENTA (Naranja Neón) */
 .formulario-venta button[type="submit"] {
   background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   box-shadow: 0 4px 15px rgba(234, 88, 12, 0.4);
@@ -217,7 +202,6 @@ button[type="submit"] {
   box-shadow: 0 8px 25px rgba(234, 88, 12, 0.6);
 }
 
-/* Botón COMPRA (Azul Eléctrico) */
 .formulario-compra button[type="submit"] {
   background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
@@ -227,7 +211,6 @@ button[type="submit"] {
   box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
 }
 
-/* Botón ALTA CLIENTE (Verde Esmeralda Brillante) */
 .alta-cliente-container button[type="submit"] {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);

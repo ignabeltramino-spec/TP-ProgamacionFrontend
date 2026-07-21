@@ -17,6 +17,16 @@ const router = createRouter({
       name: 'historial',
       component: () => import('@/views/HistorialMovimientos.vue')
     },
+    {
+    path: '/cliente',
+    name: 'cliente',
+    component: () => import('@/views/DarAltaCliente.vue')
+    },
+    {
+    path: '/ventas',
+    name: 'ventas',
+    component: () => import('@/views/DarAltaVenta.vue')
+    },
   ],
 })
 
